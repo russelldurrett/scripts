@@ -1,0 +1,34 @@
+#!/usr/bin/perl  -w
+# This script uses Bio::SeqIO objects
+# to convert a Genbank format file to
+# a FASTA format file
+# Author:  MyName,  12 Oct 2003 - Downloaded from bioinformaticsonline.com
+# Version 2.0
+
+use strict;
+my ($infile, $inSeqIO, $outSeqIO, $seqobj, $accnum);
+
+use Bio::SeqIO;
+
+# Check for filename argument
+$infile = $ARGV[0];
+if (!defined $infile) {
+    die "Usage: $0 inputfile\n";
+}
+
+# Create two SeqIO objects:
+# one for input
+# another for output
+$inSeqIO = Bio::SeqIO->new (-file => "$infile", 
+                                                -format => 'Genbank');
+$outSeqIO = Bio::SeqIO->new (-file=>">$infile.FASTA", 
+                                                  -format => 'FASTA');
+
+# In a loop, read each Genbank# sequence, print its 
+# accession number  and write it out in FASTA format
+while ($seqobj = $inSeqIO->next_seq())  {
+      $accnum = $seqobj->accession_number();
+      print "Accession#  $accnum\n";
+      $outSeqIO->write_seq($seqobj);
+}  # End while next_seq()
+
